@@ -24,8 +24,8 @@ import 'package:square_in_app_payments/google_pay_constants.dart'
 import 'colors.dart';
 import 'widgets/buy_sheet.dart';
 
-const String squareApplicationId = "REPLACE_ME";
-const String squareLocationId = "REPLACE_ME";
+const String squareApplicationId = "sq0idp-YLL8tVQz-2aVzU021xGEyA";
+const String squareLocationId = "YZRS0RMWJECCJ";
 const String applePayMerchantId = "REPLACE_ME";
 
 void main() => runApp(MaterialApp(

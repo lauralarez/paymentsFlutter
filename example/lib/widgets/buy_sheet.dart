@@ -91,7 +91,7 @@ class BuySheetState extends State<BuySheet> {
     print(
         'curl --request POST https://connect.squareup.com/v2/locations/SQUARE_LOCATION_ID/transactions \\'
         '--header \"Content-Type: application/json\" \\'
-        '--header \"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\'
+        '--header \"Authorization: Bearer EAAAEBymM2KJgrm33jw3U5RDg-EwPjOCQVmcuWmLt1IDBJ6cMDaQ8zbvqyoLWLrg\" \\'
         '--header \"Accept: application/json\" \\'
         '--data \'{'
         '\"idempotency_key\": \"$uuid\",'
