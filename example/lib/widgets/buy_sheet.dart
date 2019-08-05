@@ -16,6 +16,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:square_in_app_payments_example/bloc/userBloc.dart';
 import 'package:uuid/uuid.dart';
 import 'package:square_in_app_payments/models.dart';
 import 'package:square_in_app_payments/in_app_payments.dart';
@@ -29,6 +30,8 @@ import 'dialog_modal.dart';
 import 'modal_bottom_sheet.dart' as custom_modal_bottom_sheet;
 import 'order_sheet.dart';
 
+import 'package:flutter/services.dart';
+
 enum ApplePayStatus { success, fail, unknown }
 
 class BuySheet extends StatefulWidget {
@@ -38,7 +41,6 @@ class BuySheet extends StatefulWidget {
   final String applePayMerchantId;
   static final GlobalKey<ScaffoldState> scaffoldKey =
       GlobalKey<ScaffoldState>();
-
 
   BuySheet(
       {this.applePayEnabled,
@@ -59,11 +61,13 @@ class BuySheetState extends State<BuySheet> {
 
   bool get _applePayMerchantIdSet => widget.applePayMerchantId != "REPLACE_ME";
 
+  final bloc = Bloc();
+
   void _showOrderSheet() async {
     var selection =
         await custom_modal_bottom_sheet.showModalBottomSheet<PaymentType>(
             context: BuySheet.scaffoldKey.currentState.context,
-            builder: (context) => OrderSheet(applePayEnabled: widget.applePayEnabled, googlePayEnabled: widget.googlePayEnabled,));
+            builder: validateData);
 
     switch (selection) {
       case PaymentType.cardPayment:
@@ -84,6 +88,22 @@ class BuySheetState extends State<BuySheet> {
         }
         break;
     }
+  }
+
+  Widget validateData(context) {
+    return StreamBuilder(
+      stream: bloc.submitValid,
+      builder: (context, snapshot) {
+        return Container(
+          child: snapshot.hasData ? OrderSheet(
+                    applePayEnabled: widget.applePayEnabled,
+                    googlePayEnabled: widget.googlePayEnabled,
+                    name: bloc.submit(context, "nombre"),
+                    dir: bloc.submit(context, "direccion"))
+                  : null,
+        );
+      },
+    );
   }
 
   void printCurlCommand(String nonce) {
@@ -263,9 +283,9 @@ class BuySheetState extends State<BuySheet> {
     await InAppPayments.completeApplePayAuthorization(
         isSuccess: false, errorMessage: errorInfo.message);
     showAlertDialog(
-          context: BuySheet.scaffoldKey.currentContext,
-          title: "Error request ApplePay nonce",
-          description: errorInfo.toString());
+        context: BuySheet.scaffoldKey.currentContext,
+        title: "Error request ApplePay nonce",
+        description: errorInfo.toString());
   }
 
   void _onApplePayEntryComplete() {
@@ -278,10 +298,41 @@ class BuySheetState extends State<BuySheet> {
   Widget build(BuildContext context) => MaterialApp(
         theme: ThemeData(canvasColor: Colors.transparent),
         home: Scaffold(
-          backgroundColor: mainBackgroundColor,
+          //backgroundColor: Color(0xffe3d5b6),
           key: BuySheet.scaffoldKey,
           body: Builder(
             builder: (context) => Center(
+                child: Column(
+              //mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  child: title("Datos de Delivery"),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 32.0),
+                ),
+                nameField(bloc),
+                Container(
+                  margin: EdgeInsets.only(top: 15.0),
+                ),
+                emailField(bloc),
+                Container(
+                  margin: EdgeInsets.only(top: 15.0),
+                ),
+                numberField(bloc),
+                Container(
+                  margin: EdgeInsets.only(top: 15.0),
+                ),
+                directionField(bloc),
+                Container(
+                  margin: EdgeInsets.only(top: 32),
+                  child:
+                      CookieButton(text: "Aceptar", onPressed: _showOrderSheet,),
+                ),
+              ],
+            )),
+
+            /*builder: (context) => Center(
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -312,8 +363,112 @@ class BuySheetState extends State<BuySheet> {
                           CookieButton(text: "Buy", onPressed: _showOrderSheet),
                     ),
                   ],
-                )),
+                )),*/
           ),
         ),
       );
+
+  Widget title(String titulo) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 45, 0, 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                titulo,
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 35,
+                  color: Color(0xFF33D9D6),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget nameField(Bloc bloc) {
+    return StreamBuilder(
+      stream: bloc.name,
+      builder: (context, snapshot) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
+          child: TextField(
+            inputFormatters: [LengthLimitingTextInputFormatter(15)],
+            onChanged: bloc.changeName,
+            decoration: InputDecoration(
+              hintText: 'Nombre',
+              labelText: 'Nombre',
+              errorText: snapshot.error,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget emailField(Bloc bloc) {
+    return StreamBuilder(
+      stream: bloc.email,
+      builder: (context, snapshot) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
+          child: TextField(
+            onChanged: bloc.changeEmail,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              hintText: 'you@ex.com',
+              labelText: 'Correo',
+              errorText: snapshot.error,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget numberField(Bloc bloc) {
+    return StreamBuilder(
+      stream: bloc.number,
+      builder: (context, snapshot) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
+          child: TextField(
+            inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+            onChanged: bloc.changeNumber,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              hintText: '0000-0000000',
+              labelText: 'Numero de Telefono',
+              errorText: snapshot.error,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget directionField(Bloc bloc) {
+    return StreamBuilder(
+      stream: bloc.direction,
+      builder: (context, snapshot) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
+          child: TextField(
+            onChanged: bloc.changeDirection,
+            decoration: InputDecoration(
+              hintText: 'Bogota, Colombia',
+              labelText: 'Direccion de Delivery',
+              errorText: snapshot.error,
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

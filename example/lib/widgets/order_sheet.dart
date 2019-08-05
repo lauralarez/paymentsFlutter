@@ -15,6 +15,7 @@
 */
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
+import 'package:square_in_app_payments_example/bloc/userBloc.dart';
 import '../colors.dart';
 import 'cookie_button.dart';
 
@@ -26,7 +27,11 @@ String getCookieAmount() => (cookieAmount / 100).toStringAsFixed(2);
 class OrderSheet extends StatelessWidget {
   final bool googlePayEnabled;
   final bool applePayEnabled;
-  OrderSheet({this.googlePayEnabled, this.applePayEnabled});
+  final name;
+  final dir;
+  OrderSheet({this.googlePayEnabled, this.applePayEnabled, this.name, this.dir});
+
+  final bloc = Bloc();
 
   @override
   Widget build(BuildContext context) => Container(
@@ -53,7 +58,7 @@ class OrderSheet extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      _ShippingInformation(),
+                      _ShippingInformation(name: name, dir: dir),
                       _LineDivider(),
                       _PaymentTotal(),
                       _LineDivider(),
@@ -119,6 +124,9 @@ class OrderSheet extends StatelessWidget {
 }
 
 class _ShippingInformation extends StatelessWidget {
+  final name;
+  final dir;
+  _ShippingInformation({this.name, this.dir});
   @override
   Widget build(BuildContext context) => Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -126,8 +134,8 @@ class _ShippingInformation extends StatelessWidget {
         children: <Widget>[
           Padding(padding: EdgeInsets.only(left: 30)),
           Text(
-            "Ship to",
-            style: TextStyle(fontSize: 16, color: mainTextColor),
+            "Entrega",
+            style: TextStyle(fontSize: 16, color: Color(0xFF33D9D6)),
           ),
           Padding(padding: EdgeInsets.only(left: 30)),
           Column(
@@ -135,17 +143,23 @@ class _ShippingInformation extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Lauren Nobel",
+                  name,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                   textAlign: TextAlign.center,
                 ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 6),
                 ),
-                Text(
-                  "1455 Market Street\nSan Francisco, CA, 94103",
-                  style: TextStyle(fontSize: 16, color: subTextColor),
+                Container(
+                  width: 200,
+                  child: Text(
+                    dir,
+                    style: TextStyle(fontSize: 16, color: subTextColor),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 3,
+                  ),
                 ),
+                
               ]),
         ],
       );
@@ -170,7 +184,7 @@ class _PaymentTotal extends StatelessWidget {
           Padding(padding: EdgeInsets.only(left: 30)),
           Text(
             "Total",
-            style: TextStyle(fontSize: 16, color: mainTextColor),
+            style: TextStyle(fontSize: 16, color: Color(0xFF33D9D6)),
           ),
           Padding(padding: EdgeInsets.only(right: 47)),
           Text(

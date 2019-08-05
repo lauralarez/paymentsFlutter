@@ -9,7 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  rxdart:
+  bloc_pattern:
   http: ^0.12.0
   uuid: ^2.0.0
 
