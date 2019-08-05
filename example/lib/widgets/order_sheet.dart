@@ -81,7 +81,7 @@ class OrderSheet extends StatelessWidget {
         Container(
           child: Expanded(
             child: Text(
-              "Place your order",
+              "Datos de la Orden",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -94,7 +94,7 @@ class OrderSheet extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           CookieButton(
-            text: "Pay with card",
+            text: "Pagar con Tarjeta",
             onPressed: () {
               Navigator.pop(context, PaymentType.cardPayment);
             },
@@ -140,7 +140,7 @@ class _ShippingInformation extends StatelessWidget {
           Padding(padding: EdgeInsets.only(left: 30)),
           Column(
               mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 Text(
                   name,

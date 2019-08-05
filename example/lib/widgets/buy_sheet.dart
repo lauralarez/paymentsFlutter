@@ -95,12 +95,13 @@ class BuySheetState extends State<BuySheet> {
       stream: bloc.submitValid,
       builder: (context, snapshot) {
         return Container(
-          child: snapshot.hasData ? OrderSheet(
-                    applePayEnabled: widget.applePayEnabled,
-                    googlePayEnabled: widget.googlePayEnabled,
-                    name: bloc.submit(context, "nombre"),
-                    dir: bloc.submit(context, "direccion"))
-                  : null,
+          child: snapshot.hasData
+              ? OrderSheet(
+                  applePayEnabled: widget.applePayEnabled,
+                  googlePayEnabled: widget.googlePayEnabled,
+                  name: bloc.submit(context, "nombre"),
+                  dir: bloc.submit(context, "direccion"))
+              : null,
         );
       },
     );
@@ -300,39 +301,42 @@ class BuySheetState extends State<BuySheet> {
         home: Scaffold(
           //backgroundColor: Color(0xffe3d5b6),
           key: BuySheet.scaffoldKey,
-          body: Builder(
-            builder: (context) => Center(
-                child: Column(
-              //mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  child: title("Datos de Delivery"),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 32.0),
-                ),
-                nameField(bloc),
-                Container(
-                  margin: EdgeInsets.only(top: 15.0),
-                ),
-                emailField(bloc),
-                Container(
-                  margin: EdgeInsets.only(top: 15.0),
-                ),
-                numberField(bloc),
-                Container(
-                  margin: EdgeInsets.only(top: 15.0),
-                ),
-                directionField(bloc),
-                Container(
-                  margin: EdgeInsets.only(top: 32),
-                  child:
-                      CookieButton(text: "Aceptar", onPressed: _showOrderSheet,),
-                ),
-              ],
-            )),
+          body: SingleChildScrollView(
+            child: Builder(
+              builder: (context) => Center(
+                  child: Column(
+                //mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: title("Datos de Delivery"),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 32.0),
+                  ),
+                  nameField(bloc),
+                  Container(
+                    margin: EdgeInsets.only(top: 15.0),
+                  ),
+                  emailField(bloc),
+                  Container(
+                    margin: EdgeInsets.only(top: 15.0),
+                  ),
+                  numberField(bloc),
+                  Container(
+                    margin: EdgeInsets.only(top: 15.0),
+                  ),
+                  directionField(bloc),
+                  Container(
+                    margin: EdgeInsets.only(top: 32),
+                    child: CookieButton(
+                      text: "Aceptar",
+                      onPressed: _showOrderSheet,
+                    ),
+                  ),
+                ],
+              )),
 
-            /*builder: (context) => Center(
+              /*builder: (context) => Center(
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -364,6 +368,7 @@ class BuySheetState extends State<BuySheet> {
                     ),
                   ],
                 )),*/
+            ),
           ),
         ),
       );

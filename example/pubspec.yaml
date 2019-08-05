@@ -17,6 +17,13 @@ dependencies:
 dev_dependencies:
   square_in_app_payments:
     path: ../
+  
+  flutter_launcher_icons:
+
+flutter_icons:
+  image_path: "assets/icono_spondylux.png" 
+  android: true
+  ios: true
 
 flutter:
   uses-material-design: true
