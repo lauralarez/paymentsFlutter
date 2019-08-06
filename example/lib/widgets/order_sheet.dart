@@ -140,7 +140,7 @@ class _ShippingInformation extends StatelessWidget {
           Padding(padding: EdgeInsets.only(left: 30)),
           Column(
               mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
                   name,
@@ -151,7 +151,7 @@ class _ShippingInformation extends StatelessWidget {
                   padding: EdgeInsets.only(bottom: 6),
                 ),
                 Container(
-                  width: 200,
+                  width: 220,
                   child: Text(
                     dir,
                     style: TextStyle(fontSize: 16, color: subTextColor),
